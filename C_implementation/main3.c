@@ -56,10 +56,16 @@ int authenticate(char *username, char *password) {
 }
 
 int main() {
+  printf("Program start?");
   add_user("Alice", "password123");
+  printf("Program middle?");
   add_user("Bob", "password456");
+  printf("Program middle?");
   authenticate("Alice", "password123");
+  printf("Program middle?");
   authenticate("Bob", "password123");
+  printf("Program middle?");
   authenticate("Eve", "password789");
+  printf("Program end?");
   return 0;
 }
