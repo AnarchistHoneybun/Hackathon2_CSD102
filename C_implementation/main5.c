@@ -161,7 +161,7 @@ void adminLogin() {
     int num_attempts = 0;
     time_t last_attempt_time = 0;
     
-    printf("admin_pass: ");
+    printf("admin_tag: ");
     fgets(username, 32, stdin);
     username[strcspn(username, "\n")] = '\0';  // remove newline character
     
@@ -189,7 +189,24 @@ adminpass:
         caesar_cipher(password, SHIFT);
         if (verify_password(password, admin->hash)) {
             printf("Welcome, %s!\n", admin->username);
-            return;
+            printf("Access user database? (y/n): ");
+
+            char choice;
+            scanf("%c", &choice);
+            if (choice == 'y') {
+                printf("User database:\n");
+                for (int i = 0; i < num_users; i++) {
+                    printf("%s  \n", users[i].username);
+                }
+                printf("Exiting...\n");
+                fflush(stdin);
+                return;
+            }else{
+                printf("Exiting...\n");
+                fflush(stdin);
+                return;
+            }
+
         } else {
             num_attempts++;
             last_attempt_time = time(NULL);
