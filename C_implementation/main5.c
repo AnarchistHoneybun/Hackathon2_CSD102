@@ -211,7 +211,7 @@ adminpass:
                 for (int i = 0; i < num_users; i++) {
                     printf("%s  \n", users[i].username);
                 }
-                printf("Exiting...\n");
+                printf(".\n.\n.\nExiting...\n");
                 fflush(stdin);
                 return;
             }else{
