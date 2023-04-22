@@ -49,7 +49,8 @@ void login() {
     time_t last_attempt_time = 0;
     
     printf("Username: ");
-    scanf("%s", username);
+    fgets(username, 32, stdin);
+    username[strcspn(username, "\n")] = '\0';  // remove newline character
     
     User *user = find_user_by_username(username);
     if (user == NULL) {
@@ -65,7 +66,8 @@ void login() {
         }
         
         printf("Password: ");
-        scanf("%s", password);
+        fgets(password, 32, stdin);
+        password[strcspn(password, "\n")] = '\0';  // remove newline character
         
         if (verify_password(password, user->hash)) {
             printf("Welcome, %s!\n", user->username);

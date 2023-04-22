@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <openssl/sha.h>
+#include <./sha.h>
 
 int main() {
     unsigned char *input_data = "Hello, world!";
