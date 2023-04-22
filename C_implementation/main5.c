@@ -47,9 +47,9 @@ typedef struct {
 //>predefined user array
 //todo add an admin login, so will need another array for the admins
 User users[MAX_USERS] = {
-    {"alice", "$2b$10$OgLV1meFvy8Cfz.jnYbKpepBm6egbXH.kmIF2i.P1CjKZ2Mw8SdDS"},
-    {"bob", "$2b$10$3X9UWjKu.7VmtfQzFw67VeWAdzyJjPJ6TgT.e3sU9XW16hjOuV7sK"},
-    {"charlie", "$2b$10$rlKpDxHb51X8M9QcB0C1/OhyFZf./DZjK2gYt.s1SGmH1c5CKXn96"}
+    {"alice", "sdvvzrug1"},
+    {"bob", "sdvvzrug2"},
+    {"charlie", "sdvvzrug3"}
 }; //!recompute this one asap
 
 //> admin database
@@ -275,12 +275,71 @@ void signup() {
     printf("User %s created successfully.\n", username);
 }
 
+//> function to write user data to a text file
+void write_users_to_file() {
+    FILE *fp;
+    fp = fopen("users.txt", "w");
+    if (fp == NULL) {
+        printf("Error: failed to open file\n");
+        return;
+    }
+    
+    for (int i = 0; i < num_users; i++) {
+        fprintf(fp, "%s %s\n", users[i].username, users[i].hash);
+    }
+    
+    fclose(fp);
+}
+
+//> function to read user data from a text file
+void read_users_from_file() {
+    int index = 0;
+    FILE *fp;
+    fp = fopen("users.txt", "r");
+    if (fp == NULL) {
+        printf("Error: failed to open file\n");
+        return;
+    }
+    
+    char line[100];
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        char *username = strtok(line, " ");
+        char *hash = strtok(NULL, " \n");
+        if (username != NULL && hash != NULL) {
+            User user;
+            strncpy(user.username, username, sizeof(user.username));
+            strncpy(user.hash, hash, sizeof(user.hash));
+            users[index++] = user;
+            if(index > num_users){
+                num_users++;
+            }
+        }
+    }
+    
+    fclose(fp);
+}
+
+//> function to clear a file
+void clear_file(char *filename) {
+    FILE *fp;
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("Error: failed to open file\n");
+        return;
+    }
+    fclose(fp);
+}
+
+
+
 
 int main() {
     
 
     //> menu based login/signup
 
+    read_users_from_file();    
+    
     char choice[32];
 
     printf("Welcome to the login/signup system!\n");
@@ -303,6 +362,8 @@ int main() {
         }
         else if(strcmp(choice, "exit") == 0){
             printf("Exiting...\n");
+            remove("users.txt");
+            write_users_to_file();
             break;
         }
         else if(strcmp(choice, "admlog") == 0){
