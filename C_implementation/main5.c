@@ -30,8 +30,9 @@
 
 //>defining constants
 #define MAX_USERS 100
+#define MAX_ADMINS 5
 #define MAX_ATTEMPTS 5
-#define RATE_LIMIT_TIME 60
+#define RATE_LIMIT_TIME 5
 #define SHIFT 3
 
 
@@ -50,8 +51,14 @@ User users[MAX_USERS] = {
     {"charlie", "$2b$10$rlKpDxHb51X8M9QcB0C1/OhyFZf./DZjK2gYt.s1SGmH1c5CKXn96"}
 }; //!recompute this one asap
 
-int num_users = 3; //>  initial user number
+//> admin database
+User admins[MAX_ADMINS] = {
+    {"sudo", "froxper"},
+    {"root", "exfnvkrw"}
+};
 
+int num_users = 3; //>  initial user number
+int num_admins = 2; //> number of admins
 
 //> function to implement a rate limiter
 bool rate_limit_exceeded(time_t last_attempt_time) {
@@ -70,6 +77,15 @@ User *find_user_by_username(char *username) {
     return NULL;
 }
 
+User *find_admin_by_username(char *username) {
+    for (int i = 0; i < num_admins; i++) {
+        if (strcmp(username, admins[i].username) == 0) {
+            return &admins[i];
+        }
+    }
+    return NULL;
+}
+
 //> function to encrypt password using the caesar cipher
 //! need to replace shift with a defined constant, or randomize it
 void caesar_cipher(char *str, int shift) {
@@ -82,53 +98,113 @@ void caesar_cipher(char *str, int shift) {
 //> function to verify password when logging in
 //! modify this to check against the caesar hash, not from the bcrypt data
 bool verify_password(char *password, char *hash) {
-    return bcrypt_checkpw(password, hash) == 0;
+    return strcmp(hash, password) == 0;
 }
 
 
-// //> function to login
-// void login() {
-//     char username[32];
-//     char password[32];
-//     int num_attempts = 0;
-//     time_t last_attempt_time = 0;
+//> function to login
+void login() {
+    char username[32];
+    char password[32];
+    int num_attempts = 0;
+    time_t last_attempt_time = 0;
     
-//     printf("Username: ");
-//     fgets(username, 32, stdin);
-//     username[strcspn(username, "\n")] = '\0';  // remove newline character
+    printf("Username: ");
+    fgets(username, 32, stdin);
+    username[strcspn(username, "\n")] = '\0';  // remove newline character
     
-//     User *user = find_user_by_username(username);
-//     if (user == NULL) {
-//         printf("Invalid username\n");
-//         return;
-//     }
+    User *user = find_user_by_username(username);
+    if (user == NULL) {
+        printf("Invalid username\n");
+        return;
+    }
     
-//     while (true) {
-//         //>  rate limiter check
-//         if (rate_limit_exceeded(last_attempt_time)) {
-//             printf("Too many failed attempts. Please wait %d seconds before trying again.\n",
-//                    (int)(RATE_LIMIT_TIME - (time(NULL) - last_attempt_time)));
-//             return;
-//         }
+    while (true) {
+        //>  rate limiter check
+        if (rate_limit_exceeded(last_attempt_time)) {
+            sleep(1);
+            printf("Too many failed attempts. Please wait %d seconds before trying again.\n",
+                   (int)(RATE_LIMIT_TIME - (time(NULL) - last_attempt_time)));
+            continue;
+        }
         
-//         printf("Password: ");
-//         fgets(password, 32, stdin);
-//         password[strcspn(password, "\n")] = '\0';  // remove newline character
+passentry: 
+        printf("Password: ");
+        num_attempts = 0;
+        fgets(password, 32, stdin);
+        password[strcspn(password, "\n")] = '\0';  // remove newline character
         
-//         if (verify_password(password, user->hash)) {
-//             printf("Welcome, %s!\n", user->username);
-//             return;
-//         } else {
-//             num_attempts++;
-//             last_attempt_time = time(NULL);
-//             printf("Incorrect password. %d of %d attempts remaining.\n", MAX_ATTEMPTS - num_attempts, MAX_ATTEMPTS);
-//             if (num_attempts >= MAX_ATTEMPTS) {
-//                 printf("Too many failed attempts. Please wait %d seconds before trying again.\n", RATE_LIMIT_TIME);
-//                 return;
-//             }
-//         }
-//     }
-// }
+        caesar_cipher(password, SHIFT);
+        if (verify_password(password, user->hash)) {
+            printf("Welcome, %s!\n", user->username);
+            return;
+        } else {
+            num_attempts++;
+            last_attempt_time = time(NULL);
+            printf("Incorrect password. %d of %d attempts remaining.\n", MAX_ATTEMPTS - num_attempts, MAX_ATTEMPTS);
+            if(num_attempts < MAX_ATTEMPTS){
+                printf("Please try again.\n");
+                goto passentry;
+            }
+            if (num_attempts > MAX_ATTEMPTS) {
+                printf("Too many failed attempts. Please wait %d seconds before trying again.\n", RATE_LIMIT_TIME);
+                return;
+            }
+        }
+    }
+}
+
+//> function to login the admin
+void adminLogin() {
+    char username[32];
+    char password[32];
+    int num_attempts = 0;
+    time_t last_attempt_time = 0;
+    
+    printf("admin_pass: ");
+    fgets(username, 32, stdin);
+    username[strcspn(username, "\n")] = '\0';  // remove newline character
+    
+    User *admin = find_admin_by_username(username);
+    if (admin == NULL) {
+        printf("Unauthorized\n");
+        return;
+    }
+    
+    while (true) {
+        //>  rate limiter check
+        if (rate_limit_exceeded(last_attempt_time)) {
+            sleep(1);
+            printf("Too many failed attempts. Please wait %d seconds before trying again.\n",
+                   (int)(RATE_LIMIT_TIME - (time(NULL) - last_attempt_time)));
+            continue;
+        }
+        
+adminpass: 
+        printf("Password: ");
+        num_attempts = 0;
+        fgets(password, 32, stdin);
+        password[strcspn(password, "\n")] = '\0';  // remove newline character
+        
+        caesar_cipher(password, SHIFT);
+        if (verify_password(password, admin->hash)) {
+            printf("Welcome, %s!\n", admin->username);
+            return;
+        } else {
+            num_attempts++;
+            last_attempt_time = time(NULL);
+            printf("Incorrect password. %d of %d attempts remaining.\n", MAX_ATTEMPTS - num_attempts, MAX_ATTEMPTS);
+            if(num_attempts < MAX_ATTEMPTS){
+                printf("Please try again.\n");
+                goto adminpass;
+            }
+            if (num_attempts > MAX_ATTEMPTS) {
+                printf("Too many failed attempts. Please wait %d seconds before trying again.\n", RATE_LIMIT_TIME);
+                return;
+            }
+        }
+    }
+}
 
 
 //> function to signup
@@ -171,20 +247,61 @@ void signup() {
 
 
 int main() {
-    //login();
+    
 
-    //>  print out the users for debugging
-    printf("original users:\n");
-    for (int i = 0; i < num_users; i++) {
-        printf("%s %s\n", users[i].username, users[i].hash);
-    }
+    //> menu based login/signup
 
-    signup();
+    char choice[32];
 
-    //>  print out the users for debugging
-    printf("users after signup operation:\n");
-    for (int i = 0; i < num_users; i++) {
-        printf("%s %s\n", users[i].username, users[i].hash);
-    }
+    printf("Welcome to the login/signup system!\n");
+    printf("Your options are:\n");
+    printf("1. Login\n2. SignUp\n3. Exit\n");
+
+    while(true){
+
+        printf("->");
+        fgets(choice, sizeof(choice), stdin);
+        choice[strcspn(choice, "\n")] = '\0';
+
+        if(strcmp(choice, "login") == 0){
+            login();
+            continue;
+        }
+        else if(strcmp(choice, "signup") == 0){
+            signup();
+            continue;
+        }
+        else if(strcmp(choice, "exit") == 0){
+            printf("Exiting...\n");
+            break;
+        }
+        else if(strcmp(choice, "admlog") == 0){
+            adminLogin();
+            continue;
+        }
+        else{
+            printf("Invalid choice. Please try again.\n");
+            continue;
+        }
+
+    }    
+    
+    
+    //! debugging data
+    // //>  print out the users for debugging
+    // printf("original users:\n");
+    // for (int i = 0; i < num_users; i++) {
+    //     printf("%s %s\n", users[i].username, users[i].hash);
+    // }
+
+    // signup();
+
+    // //>  print out the users for debugging
+    // printf("users after signup operation:\n");
+    // for (int i = 0; i < num_users; i++) {
+    //     printf("%s %s\n", users[i].username, users[i].hash);
+    // }
+    // sleep(2);
+    // login();
     return 0;
 }
