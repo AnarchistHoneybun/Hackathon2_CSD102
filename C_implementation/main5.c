@@ -344,7 +344,7 @@ int main() {
 
     printf("Welcome to the login/signup system!\n");
     printf("Your options are:\n");
-    printf("1. Login\n2. SignUp\n3. Exit\n");
+    printf("1. Login\n2. SignUp\n3. Exit\n4. Clear Screen(cls)");
 
     while(true){
 
@@ -368,6 +368,10 @@ int main() {
         }
         else if(strcmp(choice, "admlog") == 0){
             adminLogin();
+            continue;
+        }
+        else if(strcmp(choice, "cls") == 0){
+            system("cls");
             continue;
         }
         else{
