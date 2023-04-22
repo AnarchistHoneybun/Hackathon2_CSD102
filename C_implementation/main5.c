@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
+#include <ctype.h>
 
 //>defining constants
 #define MAX_USERS 100
@@ -88,9 +89,21 @@ User *find_admin_by_username(char *username) {
 
 //> function to encrypt password using the caesar cipher
 //! need to replace shift with a defined constant, or randomize it
-void caesar_cipher(char *str, int shift) {
-    for (int i = 0; i < strlen(str); i++) {
-        str[i] = (str[i] - 'a' + shift) % 26 + 'a';
+// void caesar_cipher(char *str, int shift) {
+//     for (int i = 0; i < strlen(str); i++) {
+//         str[i] = (str[i] - 'a' + shift) % 26 + 'a';
+//     }
+// }
+
+void caesar_cipher(char *string, int shift) {
+    for (int i = 0; string[i] != '\0'; i++) {
+        if (isalpha(string[i])) {
+            if (islower(string[i])) {
+                string[i] = (string[i] - 'a' + shift) % 26 + 'a';
+            } else {
+                string[i] = (string[i] - 'A' + shift) % 26 + 'A';
+            }
+        }
     }
 }
 
