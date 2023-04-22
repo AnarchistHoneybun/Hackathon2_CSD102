@@ -32,6 +32,7 @@
 #define MAX_USERS 100
 #define MAX_ATTEMPTS 5
 #define RATE_LIMIT_TIME 60
+#define SHIFT 3
 
 
 //>user struct, storing username and hashed password
@@ -78,11 +79,11 @@ void caesar_cipher(char *str, int shift) {
 }
 
 
-// //> function to verify password when logging in
-// //! modify this to check against the caesar hash, not from the bcrypt data
-// bool verify_password(char *password, char *hash) {
-//     return bcrypt_checkpw(password, hash) == 0;
-// }
+//> function to verify password when logging in
+//! modify this to check against the caesar hash, not from the bcrypt data
+bool verify_password(char *password, char *hash) {
+    return bcrypt_checkpw(password, hash) == 0;
+}
 
 
 // //> function to login
@@ -154,8 +155,7 @@ void signup() {
     password[strcspn(password, "\n")] = '\0';
     
     // Encrypt the password with a simple Caesar cipher
-    int shift = 3;
-    caesar_cipher(password, shift);
+    caesar_cipher(password, SHIFT);
 
     // Add the user to the array of users
     if (num_users >= MAX_USERS) {
