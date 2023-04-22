@@ -1,11 +1,11 @@
-#include <Windows.h>
+//#include <Windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
-#include <bcrypt.h>
+//#include <bcrypt.h>
 
 #define MAX_USERS 100
 #define MAX_ATTEMPTS 5
@@ -84,7 +84,54 @@ void login() {
     }
 }
 
+// Encrypts a string using a simple Caesar cipher with a given shift
+void caesar_cipher(char *str, int shift) {
+    for (int i = 0; i < strlen(str); i++) {
+        str[i] = (str[i] - 'a' + shift) % 26 + 'a';
+    }
+}
+
+void signup() {
+    char username[32];
+    char password[32];
+    
+    while (true) {
+        printf("Enter a username: ");
+        fgets(username, sizeof(username), stdin);
+        // Remove trailing newline character from the username
+        username[strcspn(username, "\n")] = '\0';
+
+        if (find_user_by_username(username) != NULL) {
+            printf("That username is already taken.\n");
+        } else {
+            break;
+        }
+    }
+
+    printf("Enter a password: ");
+    fgets(password, sizeof(password), stdin);
+    // Remove trailing newline character from the password
+    password[strcspn(password, "\n")] = '\0';
+    
+    // Encrypt the password with a simple Caesar cipher
+    int shift = 3;
+    caesar_cipher(password, shift);
+
+    // Add the user to the array of users
+    if (num_users >= MAX_USERS) {
+        printf("Cannot add more users.\n");
+        return;
+    }
+    strcpy(users[num_users].username, username);
+    strcpy(users[num_users].hash, password);
+    num_users++;
+    
+    printf("User %s created successfully.\n", username);
+}
+
+
 int main() {
-    login();
+    //login();
+    signup();
     return 0;
 }
