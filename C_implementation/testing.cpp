@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 
 #define CHARSET "!@#$%^&*()0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -107,6 +109,7 @@ int main() {
             for (User &user: users) {
                 if (user.uid == uid) {
                     exists = 1;
+passentry:
                     int attempts = 5;
 
                     cout << "Enter Password\n>?";
@@ -119,8 +122,9 @@ int main() {
                     }
 
                     if (not attempts) {
-                        cout << "Out of attempts. " << uid << " has been locked.\n" ;
-                        break;
+                        cout << "Out of attempts. " << uid << " has been locked for 5 seconds.\n" ;
+                        this_thread::sleep_for(chrono::seconds(5));
+                        goto passentry;
                     }
                     cout << "Logged in successfully to " << uid << ".\n";
                     while (true) {
