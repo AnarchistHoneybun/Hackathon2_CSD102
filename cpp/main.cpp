@@ -34,10 +34,10 @@ private:
         return salt_in_progress;
     }
 
-    size_t hash(const string& plaintext_pass) {
+    string hash(const string& plaintext_pass) {
         stringstream ss;
         ss << salt << plaintext_pass;
-        return hash_func(ss.str());
+        return to_string(hash_func(ss.str()));
     }
 
 public:
@@ -47,7 +47,7 @@ public:
         // for storing new login info
         uid = user_id;
         salt = generate_salt(SALT_LEN);
-        hashed_pass = to_string(hash(plaintext_pass));
+        hashed_pass = hash(plaintext_pass);
     }
 
     explicit User(bool pass_hashed, string user_id, string saved_salt, string pass) {
@@ -55,11 +55,11 @@ public:
         uid = user_id;
         salt = saved_salt;
         if (pass_hashed == 1) hashed_pass = pass;
-        else hashed_pass = to_string(hash(pass));
+        else hashed_pass = hash(pass);
     }
 
     void update_password(string plaintext_pass) {
-        hashed_pass = to_string(hash(plaintext_pass));
+        hashed_pass = hash(plaintext_pass);
     }
 
     bool check(string user_id, string plaintext_pass) {
