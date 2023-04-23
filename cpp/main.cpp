@@ -15,9 +15,11 @@
 using namespace std;
 
 
+// initialize random number generator for salting
 random_device rand_dev;
 mt19937 rng(rand_dev());
 uniform_int_distribution<mt19937::result_type> dist(0, CHARSET_LEN - 1);
+// initialize c++ stl hash function
 hash<string> hash_func;
 
 
@@ -27,6 +29,7 @@ private:
     string salt;
 
     static string generate_salt(int len) {
+        // generate salt of a given length
         string salt_in_progress;
         for (int i = 0; i < len; i++) {
             salt_in_progress.push_back(CHARSET[dist(rng)]);
@@ -35,6 +38,7 @@ private:
     }
 
     string hash(const string& plaintext_pass) {
+        // cryptographically hash salt and plaintext password
         stringstream ss;
         ss << salt << plaintext_pass;
         return to_string(hash_func(ss.str()));
@@ -63,12 +67,14 @@ public:
     }
 
     bool check(string user_id, string plaintext_pass) {
+        // creates a new User object with given uid and pass and checks if computed hash is equal
         User check_user = User(false, user_id, salt, plaintext_pass);
         if (check_user.hashed_pass == hashed_pass) return true;
         return false;
     }
 
     string save() {
+        // returns required data in "uid hashed_password salt" format
         stringstream ss;
         ss << uid << " " << hashed_pass << " " << salt;
 
@@ -81,6 +87,7 @@ int main() {
     int option;
     vector<User> users;
 
+    // create User objects from data in pass.txt to vector users in memory
     ifstream readfile;
     string line;
     readfile.open("pass.txt");
@@ -105,6 +112,7 @@ int main() {
     }
     readfile.close();
 
+    // main menu
     while (true) {
         string uid;
         string plaintext_pass;
@@ -161,6 +169,8 @@ int main() {
                         goto passentry;
                     }
                     cout << "Logged in successfully to " << uid << ".\n";
+                    
+                    // menu after logging in
                     while (true) {
                         int inner_option;
 
@@ -203,6 +213,8 @@ int main() {
         } if (option == 3) break;
         cout << "\n";
     }
+    
+    // save User objects from vector users to pass.txt
     ofstream writefile;
     writefile.open("pass.txt");
 
