@@ -150,6 +150,21 @@ passentry:
         caesar_cipher(password, SHIFT);
         if (verify_password(password, user->hash)) {
             printf("Welcome, %s!\n", user->username);
+            printf("Do you want to change your password? (y/n): ");
+            char choice;
+            scanf("%c", &choice);
+            if (choice == 'y') {
+                printf("Enter new password: ");
+                scanf("%s", password);
+                caesar_cipher(password, SHIFT);
+                strcpy(user->hash, password);
+                printf("Password changed successfully!\n");
+                printf(".\n.\n.\nExiting...\n");
+                fflush(stdin);                
+            }else{
+                printf("Exiting...\n");
+                fflush(stdin);
+            }
             return;
         } else {
             num_attempts++;
@@ -344,7 +359,7 @@ int main() {
 
     printf("Welcome to the login/signup system!\n");
     printf("Your options are:\n");
-    printf("1. Login\n2. SignUp\n3. Exit\n4. Clear Screen(cls)");
+    printf("1. Login\n2. SignUp\n3. Exit\n4. Clear Screen(cls)\n");
 
     while(true){
 
