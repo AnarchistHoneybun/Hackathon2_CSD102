@@ -28,7 +28,7 @@ important information, orange for a todo, etc.)
 //todo 1. login system that takes in username and password
     //todo 1.1 implement a rate limiter
     //todo 1.2 implement some inane thing to do after logging in
-    //todo 1.3 add a logout option
+    //todo 1.3 add a logout option (decided to not include this after all)
 //todo 2. signup system that takes in username and password
     //todo 2.1 check new username against existing usernames
     //todo 2.2 encrypt password
@@ -43,11 +43,11 @@ important information, orange for a todo, etc.)
 //>include libraries
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <time.h>
-#include <ctype.h>
+#include <string.h> //to work with string copy and compare functions
+#include <unistd.h> //to work with sleep function
+#include <stdbool.h> //to implement boolean returns
+#include <time.h> //to implement rate limiter
+#include <ctype.h> //to check for alphanumeric characters while encrypting the password
 
 //>defining constants
 #define MAX_USERS 100
@@ -90,8 +90,8 @@ bool rate_limit_exceeded(time_t last_attempt_time) {
 
 
 //> function to find username while logging in
-User *find_user_by_username(char *username) {
-    for (int i = 0; i < num_users; i++) {
+User *find_user_by_username(char *username) { 
+    for (int i = 0; i < num_users; i++) { //>finding a user is linear in the number of users
         if (strcmp(username, users[i].username) == 0) {
             return &users[i];
         }
@@ -109,13 +109,7 @@ User *find_admin_by_username(char *username) {
 }
 
 //> function to encrypt password using the caesar cipher
-//! need to replace shift with a defined constant, or randomize it
-// void caesar_cipher(char *str, int shift) {
-//     for (int i = 0; i < strlen(str); i++) {
-//         str[i] = (str[i] - 'a' + shift) % 26 + 'a';
-//     }
-// }
-
+//// need to replace shift with a defined constant, or randomize it
 void caesar_cipher(char *string, int shift) {
     for (int i = 0; string[i] != '\0'; i++) {
         if (isalpha(string[i])) {
@@ -130,7 +124,7 @@ void caesar_cipher(char *string, int shift) {
 
 
 //> function to verify password when logging in
-//! modify this to check against the caesar hash, not from the bcrypt data
+//// modify this to check against the caesar hash, not from the bcrypt data
 bool verify_password(char *password, char *hash) {
     return strcmp(hash, password) == 0;
 }
@@ -178,10 +172,10 @@ passentry:
                 printf("Enter new password: ");
                 scanf("%s", password);
                 caesar_cipher(password, SHIFT);
-                strcpy(user->hash, password);
+                strcpy(user->hash, password); //>takes input, encrypts it, and rewrites the current password
                 printf("Password changed successfully!\n");
                 printf(".\n.\n.\nExiting...\n");
-                fflush(stdin);                
+                fflush(stdin); //>flushing the standard input buffer so that it doesn't overflow to the next input in main                
             }else{
                 printf("Exiting...\n");
                 fflush(stdin);
@@ -238,7 +232,7 @@ adminpass:
         caesar_cipher(password, SHIFT);
         if (verify_password(password, admin->hash)) {
             printf("Welcome, %s!\n", admin->username);
-            printf("Access user database? (y/n): ");
+            printf("Access user database? (y/n): "); //>prints out all the usernames in the database
 
             char choice;
             scanf("%c", &choice);
@@ -312,6 +306,9 @@ void signup() {
 }
 
 //> function to write user data to a text file
+//* called when exiting the program, the preceding line deletes the existing database and rewrites it with the new data
+//* incase the program crashes midway, the earlier data will still be preserved, and removing the file before recreating prevents
+//* the data from being duplicated
 void write_users_to_file() {
     FILE *fp;
     fp = fopen("users.txt", "w");
@@ -328,6 +325,8 @@ void write_users_to_file() {
 }
 
 //> function to read user data from a text file
+//* called when the program starts, copies the data line by line to the user array, skips users that are already
+//* hardcoded in the system so no duplicates are made
 void read_users_from_file() {
     int index = 0;
     FILE *fp;
@@ -355,20 +354,7 @@ void read_users_from_file() {
     fclose(fp);
 }
 
-//> function to clear a file
-void clear_file(char *filename) {
-    FILE *fp;
-    fp = fopen(filename, "w");
-    if (fp == NULL) {
-        printf("Error: failed to open file\n");
-        return;
-    }
-    fclose(fp);
-}
-
-
-
-
+//> main function
 int main() {
     
 
@@ -381,6 +367,8 @@ int main() {
     printf("Welcome to the login/signup system!\n");
     printf("Your options are:\n");
     printf("1. Login\n2. SignUp\n3. Exit\n4. Clear Screen(cls)\n");
+
+    //* input is taken in natural language- login, signup, exit, cls, admlog
 
     while(true){
 
@@ -398,7 +386,7 @@ int main() {
         }
         else if(strcmp(choice, "exit") == 0){
             printf("Exiting...\n");
-            remove("users.txt");
+            remove("users.txt"); //>db cleanup
             write_users_to_file();
             break;
         }
