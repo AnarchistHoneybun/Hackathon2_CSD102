@@ -155,7 +155,7 @@ int main() {
                     }
 
                     if (not attempts) {
-                        cout << "Out of attempts. " << uid << " has been locked for 5 seconds.\n";
+                        cout << "Out of attempts. " << uid << " has been locked for " << TIMEOUT << " seconds.\n";
                         this_thread::sleep_for(chrono::seconds(TIMEOUT));
                         goto passentry;
                     }
