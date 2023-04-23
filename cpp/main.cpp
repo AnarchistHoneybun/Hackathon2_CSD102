@@ -109,34 +109,35 @@ int main() {
         string uid;
         string plaintext_pass;
 
-        cout << "1. Sign up\n2. Log in\n3. Exit\n>>";
+        cout << "1. Sign up\n2. Log in\n3. Exit\n>> ";
         cin >> option;
 
         if (option == 1) {
             int exists{};
 
-            cout << "Enter UserID\n>?";
+            cout << "Enter UserID\n> ";
             cin >> uid;
 
             for (User& user: users) {
                 if (uid == user.uid) {
-                    cout << "User with UserID " << uid << " already exists. Please try again.\n";
+                    cout << "User with UserID \"" << uid << "\" already exists. Please try again.\n";
                     exists = 1;
                     break;
                 }
             }
 
             if (not exists) {
-                cout << "Enter Password\n>?";
+                cout << "Enter Password\n> ";
                 cin >> plaintext_pass;
                 User user = User(uid, plaintext_pass);
+                cout << "User \"" << uid << "\" created successfully!\n";
                 users.push_back(user);
             }
 
         } else if (option == 2) {
             int exists{};
 
-            cout << "Enter UserID\n>?";
+            cout << "Enter UserID\n> ";
             cin >> uid;
 
             for (User &user: users) {
@@ -145,7 +146,7 @@ int main() {
                     passentry:
                     int attempts = 4;
 
-                    cout << "Enter Password\n>?";
+                    cout << "Enter Password\n> ";
                     cin >> plaintext_pass;
 
                     while (not user.check(uid, plaintext_pass) and attempts >= 1) {
@@ -163,14 +164,14 @@ int main() {
                     while (true) {
                         int inner_option;
 
-                        cout << "\n1. Update UserID\n2. Update password\n3. Log out\n>?";
+                        cout << "\n1. Update UserID\n2. Update password\n3. Log out\n> ";
                         cin >> inner_option;
 
                         if (inner_option == 1) {
                             string new_uid;
                             int new_exists{};
 
-                            cout << "Enter new UserID\n>?";
+                            cout << "Enter new UserID\n> ";
                             cin >> new_uid;
 
                             for (User existing_user: users) {
@@ -187,7 +188,7 @@ int main() {
                             }
                         } else if (inner_option == 2) {
                             string new_pass;
-                            cout << "Enter new password\n>?";
+                            cout << "Enter new password\n> ";
                             cin >> new_pass;
 
                             user.update_password(new_pass);
@@ -210,5 +211,5 @@ int main() {
     }
 
     writefile.close();
-    cout << "Passwords saved to pass.txt";
+    cout << "Exiting...";
 }
