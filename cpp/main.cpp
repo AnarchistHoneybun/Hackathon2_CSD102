@@ -1,15 +1,16 @@
+#include <chrono>
+#include <fstream>
 #include <iostream>
 #include <random>
-#include <string>
 #include <sstream>
-#include <vector>
-#include <chrono>
+#include <string>
 #include <thread>
-
+#include <vector>
 
 #define CHARSET "!@#$%^&*()0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 #define CHARSET_LEN 72
 #define SALT_LEN 16
+#define TIMEOUT 5
 
 using namespace std;
 
@@ -46,24 +47,32 @@ public:
         // for storing new login info
         uid = user_id;
         salt = generate_salt(SALT_LEN);
-        hashed_pass = hash(plaintext_pass);
+        hashed_pass = to_string(hash(plaintext_pass));
     }
 
-    explicit User(string user_id, string saved_salt, string plaintext_pass) {
-        // for checking (salt given)
+    explicit User(bool pass_hashed, string user_id, string saved_salt, string pass) {
+        // for checking and loading (salt given)
         uid = user_id;
         salt = saved_salt;
-        hashed_pass = hash(plaintext_pass);
+        if (pass_hashed == 1) hashed_pass = pass;
+        else hashed_pass = to_string(hash(pass));
     }
 
     void update_password(string plaintext_pass) {
-        hashed_pass = hash(plaintext_pass);
+        hashed_pass = to_string(hash(plaintext_pass));
     }
 
     bool check(string user_id, string plaintext_pass) {
-        User check_user = User(user_id, salt, plaintext_pass);
+        User check_user = User(false, user_id, salt, plaintext_pass);
         if (check_user.hashed_pass == hashed_pass) return true;
         return false;
+    }
+
+    string save() {
+        stringstream ss;
+        ss << uid << " " << hashed_pass << " " << salt;
+
+        return ss.str();
     }
 };
 
@@ -72,11 +81,35 @@ int main() {
     int option;
     vector<User> users;
 
+    ifstream readfile;
+    string line;
+    readfile.open("pass.txt");
+
+    while (not readfile.eof()) {
+        string uid, pass, salt;
+        bool pass_delimiter{}, salt_delimiter{};
+        getline(readfile, line);
+
+        if (line.empty()) continue;
+        for (char chr: line) {
+            if (chr == ' ') {
+                if (not pass_delimiter) pass_delimiter = true;
+                else salt_delimiter = true;
+            }
+            else if (not pass_delimiter and not salt_delimiter) uid.push_back(chr);
+            else if (pass_delimiter and not salt_delimiter) pass.push_back(chr);
+            else if (pass_delimiter and salt_delimiter) salt.push_back(chr);
+        }
+
+        users.emplace_back(true, uid, salt, pass);
+    }
+    readfile.close();
+
     while (true) {
         string uid;
         string plaintext_pass;
 
-        cout << "1. Sign up\n2. Log in\n>>";
+        cout << "1. Sign up\n2. Log in\n3. Exit\n>>";
         cin >> option;
 
         if (option == 1) {
@@ -85,7 +118,7 @@ int main() {
             cout << "Enter UserID\n>?";
             cin >> uid;
 
-            for (User user: users) {
+            for (User& user: users) {
                 if (uid == user.uid) {
                     cout << "User with UserID " << uid << " already exists. Please try again.\n";
                     exists = 1;
@@ -109,21 +142,21 @@ int main() {
             for (User &user: users) {
                 if (user.uid == uid) {
                     exists = 1;
-passentry:
-                    int attempts = 5;
+                    passentry:
+                    int attempts = 4;
 
                     cout << "Enter Password\n>?";
                     cin >> plaintext_pass;
 
-                    while (not user.check(uid, plaintext_pass) and attempts) {
-                        attempts--;
+                    while (not user.check(uid, plaintext_pass) and attempts >= 1) {
                         cout << "Incorrect password. " << attempts << " attempts left.\n>?";
                         cin >> plaintext_pass;
+                        attempts--;
                     }
 
                     if (not attempts) {
-                        cout << "Out of attempts. " << uid << " has been locked for 5 seconds.\n" ;
-                        this_thread::sleep_for(chrono::seconds(5));
+                        cout << "Out of attempts. " << uid << " has been locked for 5 seconds.\n";
+                        this_thread::sleep_for(chrono::seconds(TIMEOUT));
                         goto passentry;
                     }
                     cout << "Logged in successfully to " << uid << ".\n";
@@ -166,7 +199,16 @@ passentry:
             }
 
             if (not exists) cout << "Account with UserID " << uid << " doesn't exist. Press 1 to create account.\n";
-        }
+        } if (option == 3) break;
         cout << "\n";
     }
+    ofstream writefile;
+    writefile.open("pass.txt");
+
+    for (User user: users) {
+        writefile << user.save() << endl;
+    }
+
+    writefile.close();
+    cout << "Passwords saved to pass.txt";
 }
