@@ -199,7 +199,7 @@ int main() {
                 }
             }
 
-            if (not exists) cout << "Account with UserID " << uid << " doesn't exist. Press 1 to create account.\n";
+            if (not exists) cout << "Account with UserID \"" << uid << "\" doesn't exist. Press 1 to create account.\n";
         } if (option == 3) break;
         cout << "\n";
     }
