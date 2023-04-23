@@ -150,7 +150,7 @@ int main() {
                     cin >> plaintext_pass;
 
                     while (not user.check(uid, plaintext_pass) and attempts >= 1) {
-                        cout << "Incorrect password. " << attempts << " attempts left.\n>?";
+                        cout << "Incorrect password. " << attempts << " attempts left.\n> ";
                         cin >> plaintext_pass;
                         attempts--;
                     }
@@ -164,7 +164,7 @@ int main() {
                     while (true) {
                         int inner_option;
 
-                        cout << "\n1. Update UserID\n2. Update password\n3. Log out\n> ";
+                        cout << "\n1. Update UserID\n2. Update password\n3. Log out\n>> ";
                         cin >> inner_option;
 
                         if (inner_option == 1) {
