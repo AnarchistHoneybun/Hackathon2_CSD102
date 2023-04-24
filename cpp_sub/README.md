@@ -59,6 +59,20 @@ Algorithms utilised by our program include the Mersenne Twister PRNG, Salting, a
 
 The MTPRNG is used to initialise the salting method, which creates a random salt for every password, which is then hashed with the cpp standard library method.
 
+
+## Complexity Analysis
+
+The PRNG and the hashing method from the STL are initialized in constant time.
+
+Salting takes time O(n) in the length of the password, as the salt is generated in a for loop from a predefined charset.
+
+Hashing in the stl is linear as well.
+
+Login and signup operations are O(n) in numbers of existing users.
+
+Overall, the time complexity of the program is O(n), and the space complexity is linear as well considering we store an extra salt and hash with the user data.
+
+
 ## Features
 
 - Database Encryption
