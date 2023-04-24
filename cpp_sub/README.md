@@ -3,7 +3,7 @@
 
 Problem Statement - Build a login system for a web application that and ensure that user passwords are stored securely.
 
-## 1. Objectives
+## Objectives
 
 A. Store user passwords in a way that makes it difficult for an attacker who gains access to the database to determine users' actual passwords.
 
@@ -11,7 +11,7 @@ B. Allow users to login by verifying their passwords without storing their passw
 
 C. Provides an additional layer of security to prevent brute force attack.
 
-## 2. Implementation
+## Implementation
 
 A Login System is an essential part of most applications, wherein the identity of a user is verified before they are allowed to access the services provided by the app.
 
@@ -50,6 +50,18 @@ Input is taken in the same way as the main menu;
     3. Choosing the logout option moves the control flow to the main menu.
 
 E. If the user enters '3', the program exits and any changes made to the database are saved permanently (this is a txt file which stores the username alongwith the hashed passwords and salt).
+
+
+
+
+## Features
+
+- Database Encryption
+- Rate Limiter
+- Memory Security
+- Data Storage
+
+
 
 ## Authors
 
