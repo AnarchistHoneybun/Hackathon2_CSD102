@@ -53,6 +53,11 @@ E. If the user enters '3', the program exits and any changes made to the databas
 
 
 
+## Algorithm
+
+Algorithms utilised by our program include the Mersenne Twister PRNG, Salting, and CPP Stl Hashing. 
+
+The MTPRNG is used to initialise the salting method, which creates a random salt for every password, which is then hashed with the cpp standard library method.
 
 ## Features
 
