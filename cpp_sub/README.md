@@ -54,17 +54,17 @@ E. If the user enters '3', the program exits and any changes made to the databas
 ## Screenshots
 
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/menu.png?raw=true)  
-menu  
+Menu  
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/signup.png?raw=true)  
-signing up  
+Signing Up  
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/successful%20signup.png?raw=true)  
-success message  
+Success Message  
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/login.png?raw=true)  
-logging in  
+Logging In  
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/update.png?raw=true)  
-user credentials update  
+User Credentials Update  
 ![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/database.png?raw=true)  
-user data  
+User Database  
 
 
 ## Algorithm
