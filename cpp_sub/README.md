@@ -21,7 +21,7 @@ User passwords, during signup, are randomly salted and subsequently hashed befor
 
 During login too, passwords input by the user are stored for an extremely short while in the memory, as they are immediately hashed after input and then are matched against the pre-encrypted values in the database.
 
-Our codealso implements a rate-limiter on the password entry module, which ensures brute force attacks are impeded by restricting input after a certain number of inputs.
+Our code also implements a rate-limiter on the password entry module, which ensures brute force attacks are impeded by restricting input after a certain number of inputs.
 
 ## Program Flow
 
@@ -29,11 +29,11 @@ When we run the code, this is how it works:
 
 A. A menu screen is displayed, that shows enumerated options "signup", "login", and "exit". Input is taken in the form of natural numbers.
 
-B. If the user enters '1', the program goes to the signup menu, and the user is prompted to enter a new user id. This input is checked against the database to ensure the provided user id doesn't already exist, and if it does the user is prompted to try again. Then the control moves back the menu screen.
+B. If the user enters '1', the program goes to the signup menu, and the user is prompted to enter a new user id. This input is checked against the database to ensure the provided user id doesn't already exist, and if it does the user is prompted to try again. Then the control moves back to the menu screen.
 
 When a valid user id is entered, the user is prompted to provide a password for their account, which is then salted, hashed, and pushed alongwith the user id and other relevant data to the User database. A success message is displayed after this and the control goes back to the menu screen.
 
-C. When the user enters '2', the program goes to the login menu, and the user is prompted to enter their username. This input is checked against the database to ensure the user exists, and it the program is not able to find said user a message informing the user of such is displayed, and the control goes back to the menu.
+C. When the user enters '2', the program goes to the login menu, and the user is prompted to enter their username. This input is checked against the database to ensure the user exists, and if the program is not able to find said user a message informing the user of such is displayed, and the control goes back to the menu.
 
 If the user id exists, the program prompts a password entry, and the user is given 5 chances to input their password. If the user fails to input their password correctly in given number of attempts, an error message is displayed and password entry is restricted for 5 seconds.
 
