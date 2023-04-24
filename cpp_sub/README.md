@@ -47,4 +47,13 @@ Input is taken in the same way as the main menu;
 
 E. If the user enters '3', the program exits and any changes made to the database are saved permanently (this is a txt file which stores the username alongwith the hashed passwords and salt).
 
+## Authors
 
+- [@AnarchistHoneybun](https://github.com/AnarchistHoneybun)
+    Raj Rajeshwar Singh Bisen , 2210110917 , rs135
+- [@dtele](https://github.com/dtele)
+    Dhruv Sharma , 2210110259 , ds332
+- [@Arhamjain1](https://github.com/Arhamjain1)
+    Arham Jain , 2210110924 , aj919
+- [@Xhadou](https://github.com/Xhadou)
+    Pratyush Jain , 2210110970 , pj825
