@@ -53,7 +53,7 @@ E. If the user enters '3', the program exits and any changes made to the databas
 
 ## Screenshots
 
-![App Screenshot](cpp_sub/Images/menu.png)
+![App Screenshot](https://github.com/AnarchistHoneybun/Hackathon2_CSD102/blob/main/cpp_sub/Images/menu.png?raw=true)
 
 
 ## Algorithm
