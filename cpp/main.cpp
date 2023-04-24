@@ -1,3 +1,22 @@
+/*
+>Submission Information:
+>Team Members: 
+1. Raj RS Bisen , rs135, 2210110917
+2. Dhruv Sharma , ds332, 2210110259
+3. Arham Jain   , aj919, 2210110924
+4. Pratyush Jain, pj825, 2210110970
+
+>Submission Date: 2023-04-03
+>Class: CSD102( Data Structures)
+Note for Reviewer: The following code has been written on VS Code and 
+compiled on the GCC compiler. Comments on this code utilise an extension
+called "Better Comments" which is available on the VS Code marketplace.
+While not necessary for the functionality of the code, the above extension
+provides context for some comments in the form of color cues(such as red for
+important information, orange for a todo, etc.)
+*/
+
+
 #include <chrono>
 #include <fstream>
 #include <iostream>
