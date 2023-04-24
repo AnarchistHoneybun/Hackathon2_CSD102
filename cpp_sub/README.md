@@ -53,7 +53,7 @@ E. If the user enters '3', the program exits and any changes made to the databas
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](cpp_sub/Images/menu.png)
 
 
 ## Algorithm
