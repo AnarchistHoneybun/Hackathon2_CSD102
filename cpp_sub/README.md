@@ -23,7 +23,7 @@ During login too, passwords input by the user are stored for an extremely short 
 
 Our codealso implements a rate-limiter on the password entry module, which ensures brute force attacks are impeded by restricting input after a certain number of inputs.
 
-## 3. Program Flow
+## Program Flow
 
 When we run the code, this is how it works:
 
