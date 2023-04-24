@@ -43,8 +43,10 @@ Input is taken in the same way as the main menu;
 
     1. If the user chooses to change their password, a password entry field is displayed and the input taken is modified 
     in the same way as it is during signup, and changed pushed to the database.
+    
     2. If the user chooses to modify their username, an input field is displayed, and the input is checked against the
     database to ensure the new username doesn't already exist. Then the changed are pushed to the database.
+    
     3. Choosing the logout option moves the control flow to the main menu.
 
 E. If the user enters '3', the program exits and any changes made to the database are saved permanently (this is a txt file which stores the username alongwith the hashed passwords and salt).
