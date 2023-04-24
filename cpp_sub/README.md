@@ -62,6 +62,13 @@ E. If the user enters '3', the program exits and any changes made to the databas
 - Data Storage
 
 
+## Drawbacks
+
+- No admin mode, thus, no way to access user data during runtime.
+- Users are searched linearly, which would throttle the speed of the program as the number of users increase.
+- No way to remove users (follows from the program not having an admin mode).
+
+
 
 ## Authors
 
